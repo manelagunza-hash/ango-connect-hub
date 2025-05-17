@@ -1,12 +1,13 @@
 
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, User, Briefcase, CheckCircle, XCircle } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useToast } from '@/hooks/use-toast';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { useAuth } from '@/context/AuthContext';
 
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -17,7 +18,17 @@ const Register = () => {
     phone: '',
     password: '',
   });
-  const { toast } = useToast();
+  const [error, setError] = useState<string | null>(null);
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const { signUp, user, loading } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Se o usuário já estiver autenticado, redirecionar para a página inicial
+    if (user && !loading) {
+      navigate('/');
+    }
+  }, [user, loading, navigate]);
 
   const toggleShowPassword = () => setShowPassword(!showPassword);
 
@@ -30,19 +41,47 @@ const Register = () => {
   const hasMinLength = formData.password.length >= 8;
   const hasUpperCase = /[A-Z]/.test(formData.password);
   const hasNumber = /[0-9]/.test(formData.password);
+  const isPasswordValid = hasMinLength && hasUpperCase && hasNumber;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
     
-    // Aqui seria implementada a lógica de criação de conta
-    // Por enquanto, apenas exibimos um toast de sucesso
-    toast({
-      title: "Conta criada com sucesso!",
-      description: "Bem-vindo ao Ango Connect!",
-    });
+    if (!isPasswordValid) {
+      setError("A senha não atende aos requisitos de segurança");
+      return;
+    }
 
-    console.log('Register with:', formData, 'Account type:', accountType);
+    if (!termsAccepted) {
+      setError("Você precisa aceitar os termos de serviço");
+      return;
+    }
+    
+    try {
+      await signUp(
+        formData.email, 
+        formData.password, 
+        formData.name, 
+        formData.phone || undefined
+      );
+      
+      // O redirecionamento será feito pelo AuthContext se o registro for bem-sucedido
+    } catch (err: any) {
+      setError(err.message || 'Ocorreu um erro ao criar sua conta');
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="flex flex-col min-h-screen">
+        <Header />
+        <div className="flex-grow flex items-center justify-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent"></div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -57,6 +96,12 @@ const Register = () => {
                 Junte-se ao Ango Connect e conecte-se aos melhores profissionais
               </p>
             </div>
+
+            {error && (
+              <Alert variant="destructive" className="mb-6">
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
 
             {/* Account Type Selection */}
             <div className="flex justify-center space-x-4 mb-8">
@@ -123,7 +168,6 @@ const Register = () => {
                     placeholder="+244 XXX XXX XXX"
                     value={formData.phone}
                     onChange={handleInputChange}
-                    required
                   />
                 </div>
 
@@ -190,6 +234,8 @@ const Register = () => {
                     aria-describedby="terms"
                     type="checkbox"
                     className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300"
+                    checked={termsAccepted}
+                    onChange={(e) => setTermsAccepted(e.target.checked)}
                     required
                   />
                 </div>
@@ -210,7 +256,7 @@ const Register = () => {
               <Button 
                 type="submit" 
                 className="w-full bg-accent hover:bg-accent-hover"
-                disabled={!hasMinLength || !hasUpperCase || !hasNumber}
+                disabled={!isPasswordValid || !termsAccepted}
               >
                 Criar Conta
               </Button>

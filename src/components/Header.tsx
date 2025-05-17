@@ -1,117 +1,221 @@
 
-import React, { useState } from 'react';
+import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { Menu, X } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
-import { Menu, X } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { useSubscription } from "@/context/SubscriptionContext";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const location = useLocation();
+  const { user, signOut } = useAuth();
+  const { currentPlan } = useSubscription();
+  
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+  const closeMenu = () => setIsMenuOpen(false);
 
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
+  const isActivePath = (path: string) => {
+    if (path === "/") return location.pathname === "/";
+    return location.pathname.startsWith(path);
   };
 
   return (
-    <header className="bg-white shadow-sm sticky top-0 z-50">
-      <div className="container-custom flex justify-between items-center py-4">
+    <header className="bg-white shadow-md sticky top-0 z-50">
+      <div className="container-custom py-4 flex justify-between items-center">
         {/* Logo */}
         <Link to="/" className="flex items-center">
-          <span className="text-2xl font-bold text-primary">Ango Connect</span>
+          <span className="text-accent font-extrabold text-2xl">Ango</span>
+          <span className="text-primary font-bold text-2xl">Connect</span>
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex space-x-8">
-          <Link to="/" className="text-gray-700 hover:text-accent font-medium transition-colors">
+        <nav className="hidden md:flex items-center space-x-1">
+          <Link
+            to="/"
+            className={`px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100 ${
+              isActivePath("/") ? "text-accent" : "text-gray-700"
+            }`}
+          >
             Início
           </Link>
-          <Link to="/services" className="text-gray-700 hover:text-accent font-medium transition-colors">
+          <Link
+            to="/services"
+            className={`px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100 ${
+              isActivePath("/services") ? "text-accent" : "text-gray-700"
+            }`}
+          >
             Serviços
           </Link>
-          <Link to="/how-it-works" className="text-gray-700 hover:text-accent font-medium transition-colors">
+          <Link
+            to="/how-it-works"
+            className={`px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100 ${
+              isActivePath("/how-it-works") ? "text-accent" : "text-gray-700"
+            }`}
+          >
             Como Funciona
           </Link>
-          <Link to="/about" className="text-gray-700 hover:text-accent font-medium transition-colors">
+          <Link
+            to="/about"
+            className={`px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100 ${
+              isActivePath("/about") ? "text-accent" : "text-gray-700"
+            }`}
+          >
             Sobre
           </Link>
-          <Link to="/contact" className="text-gray-700 hover:text-accent font-medium transition-colors">
+          <Link
+            to="/contact"
+            className={`px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100 ${
+              isActivePath("/contact") ? "text-accent" : "text-gray-700"
+            }`}
+          >
             Contato
           </Link>
+
+          {/* Mostrar o botão apropriado baseado na autenticação */}
+          <div className="ml-4 flex items-center space-x-2">
+            {user ? (
+              <>
+                {currentPlan === 'basic' && (
+                  <Link to="/premium" className="inline-flex items-center px-3 py-1 text-sm bg-accent/10 text-accent rounded-full font-medium">
+                    Upgrade
+                  </Link>
+                )}
+                <Button asChild variant="ghost" size="sm">
+                  <Link to="/profile">
+                    Meu Perfil
+                  </Link>
+                </Button>
+                <Button onClick={signOut} variant="outline" size="sm">
+                  Sair
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button asChild variant="ghost" size="sm">
+                  <Link to="/login">
+                    Login
+                  </Link>
+                </Button>
+                <Button asChild size="sm">
+                  <Link to="/register">
+                    Registrar
+                  </Link>
+                </Button>
+              </>
+            )}
+          </div>
         </nav>
 
-        {/* Desktop Auth Buttons */}
-        <div className="hidden md:flex items-center space-x-4">
-          <Link to="/login" className="text-gray-700 hover:text-accent font-medium transition-colors">
-            Entrar
-          </Link>
-          <Button className="bg-accent hover:bg-accent-hover text-white rounded-md">
-            Comece Agora
-          </Button>
-        </div>
-
         {/* Mobile Menu Button */}
-        <button
-          className="md:hidden text-gray-700 focus:outline-none"
-          onClick={toggleMenu}
-          aria-label="Menu"
-        >
-          {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
+        <div className="md:hidden">
+          <button
+            onClick={toggleMenu}
+            className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:bg-gray-100 focus:outline-none"
+          >
+            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Navigation */}
       {isMenuOpen && (
-        <div className="md:hidden bg-white shadow-md">
-          <div className="container-custom py-4 flex flex-col space-y-4">
+        <div className="md:hidden bg-white border-t">
+          <div className="container-custom py-2 space-y-1">
             <Link
               to="/"
-              className="text-gray-700 hover:text-accent font-medium transition-colors px-2 py-2"
-              onClick={() => setIsMenuOpen(false)}
+              onClick={closeMenu}
+              className={`block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-100 ${
+                isActivePath("/") ? "text-accent" : "text-gray-700"
+              }`}
             >
               Início
             </Link>
             <Link
               to="/services"
-              className="text-gray-700 hover:text-accent font-medium transition-colors px-2 py-2"
-              onClick={() => setIsMenuOpen(false)}
+              onClick={closeMenu}
+              className={`block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-100 ${
+                isActivePath("/services") ? "text-accent" : "text-gray-700"
+              }`}
             >
               Serviços
             </Link>
             <Link
               to="/how-it-works"
-              className="text-gray-700 hover:text-accent font-medium transition-colors px-2 py-2"
-              onClick={() => setIsMenuOpen(false)}
+              onClick={closeMenu}
+              className={`block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-100 ${
+                isActivePath("/how-it-works") ? "text-accent" : "text-gray-700"
+              }`}
             >
               Como Funciona
             </Link>
             <Link
               to="/about"
-              className="text-gray-700 hover:text-accent font-medium transition-colors px-2 py-2"
-              onClick={() => setIsMenuOpen(false)}
+              onClick={closeMenu}
+              className={`block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-100 ${
+                isActivePath("/about") ? "text-accent" : "text-gray-700"
+              }`}
             >
               Sobre
             </Link>
             <Link
               to="/contact"
-              className="text-gray-700 hover:text-accent font-medium transition-colors px-2 py-2"
-              onClick={() => setIsMenuOpen(false)}
+              onClick={closeMenu}
+              className={`block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-100 ${
+                isActivePath("/contact") ? "text-accent" : "text-gray-700"
+              }`}
             >
               Contato
             </Link>
-
-            <div className="flex flex-col space-y-3 pt-4 border-t border-gray-100">
-              <Link
-                to="/login"
-                className="text-gray-700 hover:text-accent font-medium transition-colors px-2 py-2"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Entrar
-              </Link>
-              <Button
-                className="bg-accent hover:bg-accent-hover text-white rounded-md w-full"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Comece Agora
-              </Button>
+            
+            {/* Botões de autenticação para mobile */}
+            <div className="pt-4 pb-2 border-t border-gray-200">
+              {user ? (
+                <>
+                  {currentPlan === 'basic' && (
+                    <Link 
+                      to="/premium" 
+                      onClick={closeMenu}
+                      className="block px-3 py-2 text-base font-medium text-accent bg-accent/10 rounded-md mb-2 text-center"
+                    >
+                      Upgrade para Premium
+                    </Link>
+                  )}
+                  <Link
+                    to="/profile"
+                    onClick={closeMenu}
+                    className="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 rounded-md"
+                  >
+                    Meu Perfil
+                  </Link>
+                  <button
+                    onClick={() => {
+                      signOut();
+                      closeMenu();
+                    }}
+                    className="block w-full text-left px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 rounded-md"
+                  >
+                    Sair
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    to="/login"
+                    onClick={closeMenu}
+                    className="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 rounded-md"
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    to="/register"
+                    onClick={closeMenu}
+                    className="block px-3 py-2 text-base font-medium text-accent hover:bg-accent/10 rounded-md"
+                  >
+                    Registrar
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </div>

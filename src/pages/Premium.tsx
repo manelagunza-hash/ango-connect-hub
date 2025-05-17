@@ -4,6 +4,10 @@ import { Check, X } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/context/AuthContext';
+import { useSubscription, SubscriptionPlan } from '@/context/SubscriptionContext';
+import { useNavigate } from 'react-router-dom';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -14,6 +18,7 @@ import {
 } from "@/components/ui/breadcrumb";
 
 interface PricingPlan {
+  id: SubscriptionPlan;
   name: string;
   price: string;
   description: string;
@@ -25,53 +30,101 @@ interface PricingPlan {
   highlighted?: boolean;
 }
 
-const pricingPlans: PricingPlan[] = [
-  {
-    name: "Básico",
-    price: "Grátis",
-    description: "Para quem está começando a explorar serviços",
-    features: [
-      { included: true, text: "Acesso à pesquisa de profissionais" },
-      { included: true, text: "Visualização limitada de perfis" },
-      { included: true, text: "Visualização de avaliações" },
-      { included: false, text: "Contato direto com profissionais" },
-      { included: false, text: "Solicitações prioritárias" },
-      { included: false, text: "Perfil verificado" },
-    ],
-    buttonText: "Comece Agora",
-  },
-  {
-    name: "Premium",
-    price: "1.500 Kz",
-    description: "Para quem busca o melhor acesso a serviços",
-    features: [
-      { included: true, text: "Acesso ilimitado à pesquisa" },
-      { included: true, text: "Visualização completa de perfis" },
-      { included: true, text: "Contato direto com profissionais" },
-      { included: true, text: "Solicitações prioritárias" },
-      { included: true, text: "Perfil verificado" },
-      { included: true, text: "Suporte prioritário 24/7" },
-    ],
-    buttonText: "Escolher Premium",
-    highlighted: true,
-  },
-  {
-    name: "Profissional",
-    price: "3.500 Kz",
-    description: "Para prestadores de serviços",
-    features: [
-      { included: true, text: "Perfil profissional destacado" },
-      { included: true, text: "Visibilidade aumentada nas buscas" },
-      { included: true, text: "Sistema de gestão de clientes" },
-      { included: true, text: "Ferramentas de orçamento" },
-      { included: true, text: "Acesso a estatísticas detalhadas" },
-      { included: true, text: "Suporte especializado para negócios" },
-    ],
-    buttonText: "Escolher Profissional",
-  },
-];
-
 const Premium = () => {
+  const { user } = useAuth();
+  const { currentPlan, purchasePlan, isLoading } = useSubscription();
+  const { toast } = useToast();
+  const navigate = useNavigate();
+
+  const pricingPlans: PricingPlan[] = [
+    {
+      id: 'basic',
+      name: "Básico",
+      price: "Grátis",
+      description: "Para quem está começando a explorar serviços",
+      features: [
+        { included: true, text: "Acesso à pesquisa de profissionais" },
+        { included: true, text: "Visualização limitada de perfis" },
+        { included: true, text: "Visualização de avaliações" },
+        { included: false, text: "Contato direto com profissionais" },
+        { included: false, text: "Solicitações prioritárias" },
+        { included: false, text: "Perfil verificado" },
+      ],
+      buttonText: "Plano Atual",
+    },
+    {
+      id: 'premium',
+      name: "Premium",
+      price: "1.500 Kz",
+      description: "Para quem busca o melhor acesso a serviços",
+      features: [
+        { included: true, text: "Acesso ilimitado à pesquisa" },
+        { included: true, text: "Visualização completa de perfis" },
+        { included: true, text: "Contato direto com profissionais" },
+        { included: true, text: "Solicitações prioritárias" },
+        { included: true, text: "Perfil verificado" },
+        { included: true, text: "Suporte prioritário 24/7" },
+      ],
+      buttonText: "Escolher Premium",
+      highlighted: true,
+    },
+    {
+      id: 'professional',
+      name: "Profissional",
+      price: "3.500 Kz",
+      description: "Para prestadores de serviços",
+      features: [
+        { included: true, text: "Perfil profissional destacado" },
+        { included: true, text: "Visibilidade aumentada nas buscas" },
+        { included: true, text: "Sistema de gestão de clientes" },
+        { included: true, text: "Ferramentas de orçamento" },
+        { included: true, text: "Acesso a estatísticas detalhadas" },
+        { included: true, text: "Suporte especializado para negócios" },
+      ],
+      buttonText: "Escolher Profissional",
+    },
+  ];
+
+  // Atualiza o texto do botão e destaque conforme o plano atual do usuário
+  const updatedPricingPlans = pricingPlans.map(plan => ({
+    ...plan,
+    buttonText: plan.id === currentPlan ? "Plano Atual" : plan.buttonText,
+    highlighted: plan.id === currentPlan || plan.highlighted && currentPlan !== 'premium' && currentPlan !== 'professional'
+  }));
+
+  const handlePlanSelection = async (plan: SubscriptionPlan) => {
+    if (!user) {
+      toast({
+        title: "Faça login para continuar",
+        description: "Você precisa estar logado para assinar um plano.",
+      });
+      navigate('/login');
+      return;
+    }
+
+    if (plan === currentPlan) {
+      toast({
+        title: "Este já é seu plano atual",
+        description: "Você já está inscrito neste plano.",
+      });
+      return;
+    }
+
+    if (plan === 'basic' && currentPlan !== 'basic') {
+      toast({
+        title: "Downgrade para plano básico",
+        description: "Para fazer downgrade para o plano básico, cancele sua assinatura atual.",
+      });
+      return;
+    }
+
+    try {
+      await purchasePlan(plan);
+    } catch (error) {
+      console.error("Erro ao processar assinatura:", error);
+    }
+  };
+
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
@@ -106,9 +159,9 @@ const Premium = () => {
         <section className="py-16">
           <div className="container-custom">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {pricingPlans.map((plan, index) => (
+              {updatedPricingPlans.map((plan) => (
                 <div 
-                  key={index} 
+                  key={plan.id} 
                   className={`bg-white rounded-lg shadow-lg p-8 border ${
                     plan.highlighted ? 'border-accent border-2 relative' : 'border-gray-100'
                   } flex flex-col h-full`}
@@ -116,7 +169,7 @@ const Premium = () => {
                   {plan.highlighted && (
                     <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
                       <span className="bg-accent text-white text-xs font-bold uppercase py-1 px-4 rounded-full">
-                        Mais Popular
+                        {plan.id === currentPlan ? 'Seu Plano' : 'Mais Popular'}
                       </span>
                     </div>
                   )}
@@ -147,12 +200,24 @@ const Premium = () => {
 
                   <Button 
                     className={`w-full ${
-                      plan.highlighted 
+                      plan.id === currentPlan 
+                        ? "bg-green-500 hover:bg-green-600"
+                        : plan.highlighted && plan.id !== currentPlan
                         ? "bg-accent hover:bg-accent-hover"
                         : "bg-primary hover:bg-primary-hover"
                     }`}
+                    onClick={() => handlePlanSelection(plan.id)}
+                    disabled={isLoading || plan.id === currentPlan}
                   >
-                    {plan.buttonText}
+                    {isLoading ? (
+                      <span className="flex items-center">
+                        <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Processando...
+                      </span>
+                    ) : plan.buttonText}
                   </Button>
                 </div>
               ))}
@@ -286,8 +351,24 @@ const Premium = () => {
             <p className="text-xl mb-8">
               Escolha o plano ideal para você e desfrute de todos os recursos que o Ango Connect tem a oferecer.
             </p>
-            <Button className="bg-accent hover:bg-accent-hover text-lg px-8 py-6">
-              Escolher Plano Premium
+            <Button 
+              className="bg-accent hover:bg-accent-hover text-lg px-8 py-6"
+              onClick={() => {
+                const premiumPlan = updatedPricingPlans.find(p => p.id === 'premium');
+                if (premiumPlan && premiumPlan.id !== currentPlan) {
+                  handlePlanSelection('premium');
+                } else if (currentPlan === 'premium') {
+                  toast({
+                    title: "Você já é um usuário Premium",
+                    description: "Você já está aproveitando todos os benefícios do plano Premium.",
+                  });
+                }
+              }}
+              disabled={isLoading || currentPlan === 'premium' || currentPlan === 'professional'}
+            >
+              {currentPlan === 'premium' || currentPlan === 'professional' 
+                ? "Você já possui um plano premium" 
+                : "Escolher Plano Premium"}
             </Button>
           </div>
         </section>

@@ -1,33 +1,69 @@
 
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/context/AuthContext';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { toast } = useToast();
+  const [error, setError] = useState<string | null>(null);
+  const { signIn, googleSignIn, facebookSignIn, user, loading } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Se o usuário já estiver autenticado, redirecionar para a página inicial
+    if (user && !loading) {
+      navigate('/');
+    }
+  }, [user, loading, navigate]);
 
   const toggleShowPassword = () => setShowPassword(!showPassword);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
     
-    // Aqui seria implementada a lógica de autenticação real
-    // Por enquanto, apenas exibimos um toast de sucesso
-    toast({
-      title: "Login realizado com sucesso",
-      description: "Bem-vindo de volta ao Ango Connect!",
-    });
-
-    console.log('Login with:', { email, password });
+    try {
+      await signIn(email, password);
+    } catch (err: any) {
+      setError(err.message || 'Ocorreu um erro ao fazer login');
+    }
   };
+
+  const handleGoogleSignIn = async () => {
+    try {
+      await googleSignIn();
+    } catch (err: any) {
+      setError(err.message || 'Erro ao fazer login com Google');
+    }
+  };
+
+  const handleFacebookSignIn = async () => {
+    try {
+      await facebookSignIn();
+    } catch (err: any) {
+      setError(err.message || 'Erro ao fazer login com Facebook');
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex flex-col min-h-screen">
+        <Header />
+        <div className="flex-grow flex items-center justify-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent"></div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -42,6 +78,12 @@ const Login = () => {
                 Acesse sua conta para gerenciar seus serviços
               </p>
             </div>
+
+            {error && (
+              <Alert variant="destructive" className="mb-6">
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
 
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
@@ -104,6 +146,7 @@ const Login = () => {
                   type="button"
                   variant="outline"
                   className="w-full"
+                  onClick={handleGoogleSignIn}
                 >
                   <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
                     <path
@@ -129,6 +172,7 @@ const Login = () => {
                   type="button"
                   variant="outline"
                   className="w-full"
+                  onClick={handleFacebookSignIn}
                 >
                   <svg className="w-5 h-5 mr-2 text-[#1877F2]" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M9.198 21.5h4v-8.01h3.604l.396-3.98h-4V7.5a1 1 0 0 1 1-1h3v-4h-3a5 5 0 0 0-5 5v2.01h-2l-.396 3.98h2.396v8.01Z" />
