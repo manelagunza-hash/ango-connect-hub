@@ -1,6 +1,5 @@
-
 import React, { useState } from 'react';
-import { Search, Star, MapPin, Filter } from 'lucide-react';
+import { Search, Star, MapPin, Filter, Zap, Building, Scissors, Laptop, Calculator, Droplet } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ServiceCard from '@/components/ServiceCard';
@@ -20,37 +19,37 @@ const serviceCategories = [
   {
     title: "Eletricista",
     description: "Instalações, reparos e manutenção elétrica residencial e comercial",
-    icon: "lightning",
+    icon: Zap,
     link: "/services/eletricista"
   },
   {
     title: "Pedreiro",
     description: "Construção civil, reformas e acabamentos de qualidade",
-    icon: "building",
+    icon: Building,
     link: "/services/pedreiro"
   },
   {
     title: "Cabeleireiro",
     description: "Cortes, tratamentos e estilos para todos os tipos de cabelo",
-    icon: "scissors",
+    icon: Scissors,
     link: "/services/cabeleireiro"
   },
   {
     title: "Informática",
     description: "Suporte técnico, manutenção de computadores e redes",
-    icon: "laptop",
+    icon: Laptop,
     link: "/services/informatica"
   },
   {
     title: "Contador",
     description: "Serviços contábeis, declaração de impostos e consultoria financeira",
-    icon: "calculator",
+    icon: Calculator,
     link: "/services/contador"
   },
   {
     title: "Encanador",
     description: "Reparos hidráulicos, instalação de tubulações e desentupimentos",
-    icon: "droplet",
+    icon: Droplet,
     link: "/services/encanador"
   }
 ];
@@ -186,33 +185,15 @@ const Services = () => {
             {/* Service Categories Grid */}
             <div className="w-full lg:w-3/4">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {serviceCategories.map((service, index) => {
-                  // Importar dinamicamente o ícone correto usando o nome
-                  const IconComponent = () => {
-                    const getLucideIcon = () => {
-                      switch(service.icon) {
-                        case 'lightning': return <Search className="h-8 w-8 text-primary" />;
-                        case 'building': return <MapPin className="h-8 w-8 text-primary" />;
-                        case 'scissors': return <Star className="h-8 w-8 text-primary" />;
-                        case 'laptop': return <Search className="h-8 w-8 text-primary" />;
-                        case 'calculator': return <MapPin className="h-8 w-8 text-primary" />;
-                        case 'droplet': return <Filter className="h-8 w-8 text-primary" />;
-                        default: return <Search className="h-8 w-8 text-primary" />;
-                      }
-                    };
-                    return getLucideIcon();
-                  };
-
-                  return (
-                    <ServiceCard
-                      key={index}
-                      title={service.title}
-                      description={service.description}
-                      icon={IconComponent}
-                      link={service.link}
-                    />
-                  );
-                })}
+                {serviceCategories.map((service, index) => (
+                  <ServiceCard
+                    key={index}
+                    title={service.title}
+                    description={service.description}
+                    icon={service.icon}
+                    link={service.link}
+                  />
+                ))}
               </div>
             </div>
           </div>
