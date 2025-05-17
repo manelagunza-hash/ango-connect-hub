@@ -13,10 +13,10 @@ const StepCard = ({ title, description, icon: Icon, step }: StepCardProps) => {
   return (
     <div className="flex flex-col items-center text-center animate-fade-in">
       <div className="relative">
-        <div className="bg-secondary rounded-full p-5 mb-4 relative">
+        <div className="bg-secondary rounded-full p-5 mb-4 relative hover:bg-accent/10 transition-colors">
           <Icon size={32} className="text-primary" />
         </div>
-        <div className="absolute -top-3 -right-3 bg-accent text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">
+        <div className="absolute -top-3 -right-3 bg-accent text-white w-8 h-8 rounded-full flex items-center justify-center font-bold shadow-md">
           {step}
         </div>
       </div>
