@@ -17,6 +17,7 @@ import Register from "./pages/Register";
 import Premium from "./pages/Premium";
 import NotFound from "./pages/NotFound";
 import Profile from "./pages/Profile";
+import AdminDashboard from "./pages/AdminDashboard";
 
 const queryClient = new QueryClient();
 
@@ -39,6 +40,7 @@ const App = () => (
               <Route path="/register" element={<Register />} />
               <Route path="/premium" element={<Premium />} />
               <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+              <Route path="/PFLGMANEGER" element={<AdminDashboard />} />
               <Route path="/terms" element={<NotFound />} />
               <Route path="/privacy" element={<NotFound />} />
               <Route path="/cookies" element={<NotFound />} />
