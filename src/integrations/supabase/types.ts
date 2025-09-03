@@ -14,6 +14,130 @@ export type Database = {
   }
   public: {
     Tables: {
+      conversations: {
+        Row: {
+          created_at: string
+          id: string
+          participant_ids: string[]
+          service_request_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          participant_ids: string[]
+          service_request_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          participant_ids?: string[]
+          service_request_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversations_service_request_id_fkey"
+            columns: ["service_request_id"]
+            isOneToOne: false
+            referencedRelation: "service_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      messages: {
+        Row: {
+          content: string
+          conversation_id: string | null
+          created_at: string
+          id: string
+          is_admin_message: boolean | null
+          message_type: string | null
+          sender_id: string | null
+        }
+        Insert: {
+          content: string
+          conversation_id?: string | null
+          created_at?: string
+          id?: string
+          is_admin_message?: boolean | null
+          message_type?: string | null
+          sender_id?: string | null
+        }
+        Update: {
+          content?: string
+          conversation_id?: string | null
+          created_at?: string
+          id?: string
+          is_admin_message?: boolean | null
+          message_type?: string | null
+          sender_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      professionals: {
+        Row: {
+          created_at: string
+          description: string | null
+          email: string
+          hourly_rate: number | null
+          id: string
+          is_available: boolean | null
+          is_verified: boolean | null
+          location: string | null
+          name: string
+          phone: string | null
+          profession: string
+          rating: number | null
+          total_reviews: number | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          email: string
+          hourly_rate?: number | null
+          id?: string
+          is_available?: boolean | null
+          is_verified?: boolean | null
+          location?: string | null
+          name: string
+          phone?: string | null
+          profession: string
+          rating?: number | null
+          total_reviews?: number | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          email?: string
+          hourly_rate?: number | null
+          id?: string
+          is_available?: boolean | null
+          is_verified?: boolean | null
+          location?: string | null
+          name?: string
+          phone?: string | null
+          profession?: string
+          rating?: number | null
+          total_reviews?: number | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -40,6 +164,107 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      reviews: {
+        Row: {
+          client_id: string | null
+          comment: string | null
+          created_at: string
+          id: string
+          professional_id: string | null
+          rating: number
+          service_request_id: string | null
+        }
+        Insert: {
+          client_id?: string | null
+          comment?: string | null
+          created_at?: string
+          id?: string
+          professional_id?: string | null
+          rating: number
+          service_request_id?: string | null
+        }
+        Update: {
+          client_id?: string | null
+          comment?: string | null
+          created_at?: string
+          id?: string
+          professional_id?: string | null
+          rating?: number
+          service_request_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_professional_id_fkey"
+            columns: ["professional_id"]
+            isOneToOne: false
+            referencedRelation: "professionals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reviews_service_request_id_fkey"
+            columns: ["service_request_id"]
+            isOneToOne: false
+            referencedRelation: "service_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      service_requests: {
+        Row: {
+          budget: number | null
+          client_id: string | null
+          completed_at: string | null
+          created_at: string
+          description: string
+          id: string
+          location: string
+          professional_id: string | null
+          scheduled_date: string | null
+          status: string | null
+          title: string
+          updated_at: string
+          urgency: string | null
+        }
+        Insert: {
+          budget?: number | null
+          client_id?: string | null
+          completed_at?: string | null
+          created_at?: string
+          description: string
+          id?: string
+          location: string
+          professional_id?: string | null
+          scheduled_date?: string | null
+          status?: string | null
+          title: string
+          updated_at?: string
+          urgency?: string | null
+        }
+        Update: {
+          budget?: number | null
+          client_id?: string | null
+          completed_at?: string | null
+          created_at?: string
+          description?: string
+          id?: string
+          location?: string
+          professional_id?: string | null
+          scheduled_date?: string | null
+          status?: string | null
+          title?: string
+          updated_at?: string
+          urgency?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_requests_professional_id_fkey"
+            columns: ["professional_id"]
+            isOneToOne: false
+            referencedRelation: "professionals"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_subscriptions: {
         Row: {
