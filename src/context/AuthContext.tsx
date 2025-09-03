@@ -83,7 +83,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         throw error;
       }
       
-      toast.success("Conta criada com sucesso! Verifique seu email para confirmar.");
+      toast.success("Conta criada com sucesso! Você já pode fazer login.");
+      navigate('/login');
     } catch (error: any) {
       toast.error(`Erro ao criar conta: ${error.message}`);
       console.error('Erro ao criar conta:', error);
