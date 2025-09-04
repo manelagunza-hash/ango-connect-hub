@@ -18,6 +18,10 @@ import Premium from "./pages/Premium";
 import NotFound from "./pages/NotFound";
 import Profile from "./pages/Profile";
 import AdminDashboard from "./pages/AdminDashboard";
+import ServiceRequest from "./pages/ServiceRequest";
+import ClientDashboard from "./pages/ClientDashboard";
+import Conversation from "./pages/Conversation";
+import ProfessionalRegistration from "./pages/ProfessionalRegistration";
 
 const queryClient = new QueryClient();
 
@@ -40,6 +44,10 @@ const App = () => (
               <Route path="/register" element={<Register />} />
               <Route path="/premium" element={<Premium />} />
               <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+              <Route path="/service-request" element={<ProtectedRoute><ServiceRequest /></ProtectedRoute>} />
+              <Route path="/client-dashboard" element={<ProtectedRoute><ClientDashboard /></ProtectedRoute>} />
+              <Route path="/conversation/:requestId" element={<ProtectedRoute><Conversation /></ProtectedRoute>} />
+              <Route path="/professional-registration" element={<ProtectedRoute><ProfessionalRegistration /></ProtectedRoute>} />
               <Route path="/PFLGMANEGER" element={<AdminDashboard />} />
               <Route path="/terms" element={<NotFound />} />
               <Route path="/privacy" element={<NotFound />} />
