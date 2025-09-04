@@ -76,6 +76,18 @@ const Header = () => {
           <div className="ml-4 flex items-center space-x-2">
             {user ? (
               <>
+                <Link
+                  to="/client-dashboard"
+                  className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100"
+                >
+                  Dashboard
+                </Link>
+                <Link
+                  to="/professional-registration"
+                  className="px-3 py-2 rounded-md text-sm font-medium text-primary hover:bg-primary/10"
+                >
+                  Seja um Profissional
+                </Link>
                 {currentPlan === 'basic' && (
                   <Link to="/premium" className="inline-flex items-center px-3 py-1 text-sm bg-accent/10 text-accent rounded-full font-medium">
                     Upgrade
@@ -172,6 +184,20 @@ const Header = () => {
             <div className="pt-4 pb-2 border-t border-gray-200">
               {user ? (
                 <>
+                  <Link
+                    to="/client-dashboard"
+                    onClick={closeMenu}
+                    className="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 rounded-md"
+                  >
+                    Dashboard
+                  </Link>
+                  <Link
+                    to="/professional-registration"
+                    onClick={closeMenu}
+                    className="block px-3 py-2 text-base font-medium text-primary hover:bg-primary/10 rounded-md"
+                  >
+                    Seja um Profissional
+                  </Link>
                   {currentPlan === 'basic' && (
                     <Link 
                       to="/premium" 
