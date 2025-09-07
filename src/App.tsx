@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import { SubscriptionProvider } from "./context/SubscriptionContext";
+import { RoleProvider } from "./context/RoleContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Index from "./pages/Index";
 import Services from "./pages/Services";
@@ -33,7 +34,8 @@ const App = () => (
       <BrowserRouter>
         <AuthProvider>
           <SubscriptionProvider>
-            <Routes>
+            <RoleProvider>
+              <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/services" element={<Services />} />
               <Route path="/services/:category" element={<Services />} />
@@ -48,13 +50,14 @@ const App = () => (
               <Route path="/client-dashboard" element={<ProtectedRoute><ClientDashboard /></ProtectedRoute>} />
               <Route path="/conversation/:requestId" element={<ProtectedRoute><Conversation /></ProtectedRoute>} />
               <Route path="/professional-registration" element={<ProtectedRoute><ProfessionalRegistration /></ProtectedRoute>} />
-              <Route path="/PFLGMANEGER" element={<AdminDashboard />} />
+              <Route path="/PFLGMANEGER" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
               <Route path="/terms" element={<NotFound />} />
               <Route path="/privacy" element={<NotFound />} />
               <Route path="/cookies" element={<NotFound />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
-            </Routes>
+              </Routes>
+            </RoleProvider>
           </SubscriptionProvider>
         </AuthProvider>
       </BrowserRouter>

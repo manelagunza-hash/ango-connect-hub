@@ -5,12 +5,14 @@ import { Menu, X } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { useSubscription } from "@/context/SubscriptionContext";
+import { useRole } from "@/context/RoleContext";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
   const { user, signOut } = useAuth();
   const { currentPlan } = useSubscription();
+  const { isAdmin } = useRole();
   
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const closeMenu = () => setIsMenuOpen(false);
@@ -76,6 +78,14 @@ const Header = () => {
           <div className="ml-4 flex items-center space-x-2">
             {user ? (
               <>
+                {isAdmin && (
+                  <Link
+                    to="/PFLGMANEGER"
+                    className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100"
+                  >
+                    Admin
+                  </Link>
+                )}
                 <Link
                   to="/client-dashboard"
                   className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100"
@@ -184,6 +194,15 @@ const Header = () => {
             <div className="pt-4 pb-2 border-t border-gray-200">
               {user ? (
                 <>
+                  {isAdmin && (
+                    <Link
+                      to="/PFLGMANEGER"
+                      onClick={closeMenu}
+                      className="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 rounded-md"
+                    >
+                      Admin
+                    </Link>
+                  )}
                   <Link
                     to="/client-dashboard"
                     onClick={closeMenu}
