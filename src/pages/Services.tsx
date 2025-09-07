@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, Star, MapPin, Filter, Zap, Building, Scissors, Laptop, Calculator, Droplet } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ServiceCard from '@/components/ServiceCard';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { supabase } from '@/integrations/supabase/client';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -59,23 +61,82 @@ const provincias = [
   "Bié", "Uíge", "Namibe", "Cunene", "Moxico"
 ];
 
+interface Professional {
+  id: string;
+  name: string;
+  profession: string;
+  location: string;
+  rating: number;
+  total_reviews: number;
+  hourly_rate: number;
+  is_verified: boolean;
+}
+
 const Services = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedProvince, setSelectedProvince] = useState("");
-  const [priceRange, setPriceRange] = useState([0, 5000]);
   const [rating, setRating] = useState(0);
+  const [professionals, setProfessionals] = useState<Professional[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [filteredProfessionals, setFilteredProfessionals] = useState<Professional[]>([]);
 
-  // Handlers simulados para os filtros
+  useEffect(() => {
+    loadProfessionals();
+  }, []);
+
+  useEffect(() => {
+    filterProfessionals();
+  }, [searchTerm, selectedProvince, rating, professionals]);
+
+  const loadProfessionals = async () => {
+    try {
+      setLoading(true);
+      
+      const { data, error } = await supabase
+        .from('professionals')
+        .select('*')
+        .eq('is_available', true)
+        .order('rating', { ascending: false });
+      
+      if (error) throw error;
+      
+      setProfessionals(data || []);
+    } catch (error) {
+      console.error('Erro ao carregar profissionais:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filterProfessionals = () => {
+    let filtered = professionals;
+
+    if (searchTerm) {
+      filtered = filtered.filter(prof => 
+        prof.profession.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        prof.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    if (selectedProvince) {
+      filtered = filtered.filter(prof => 
+        prof.location.includes(selectedProvince)
+      );
+    }
+
+    if (rating > 0) {
+      filtered = filtered.filter(prof => prof.rating >= rating);
+    }
+
+    setFilteredProfessionals(filtered);
+  };
+
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
   };
 
   const handleProvinceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedProvince(e.target.value);
-  };
-
-  const handlePriceChange = (values: number[]) => {
-    setPriceRange(values);
   };
 
   const handleRatingChange = (value: number) => {
@@ -174,7 +235,7 @@ const Services = () => {
                     </div>
 
                     {/* Apply Filters */}
-                    <Button className="w-full bg-accent hover:bg-accent-hover">
+                    <Button onClick={filterProfessionals} className="w-full bg-accent hover:bg-accent-hover">
                       Aplicar Filtros
                     </Button>
                   </div>
@@ -200,57 +261,104 @@ const Services = () => {
 
           {/* Featured Professionals Section */}
           <section className="mt-16">
-            <h2 className="text-2xl font-bold mb-8 text-center">Profissionais em Destaque</h2>
+            <h2 className="text-2xl font-bold mb-8 text-center">Profissionais Disponíveis</h2>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {[1, 2, 3, 4].map((item) => (
-                <Card key={item} className="overflow-hidden hover:shadow-lg transition-shadow">
-                  <div className="aspect-w-1 aspect-h-1 bg-gray-200">
-                    <img 
-                      src={`https://randomuser.me/api/portraits/${item % 2 === 0 ? 'men' : 'women'}/${item + 10}.jpg`}
-                      alt="Profissional"
-                      className="object-cover w-full h-48"
-                    />
-                  </div>
-                  <CardContent className="p-4">
-                    <h3 className="font-semibold text-lg">
-                      {item % 2 === 0 ? 'João Silva' : 'Maria Fernanda'}
-                    </h3>
-                    <p className="text-sm text-gray-500 mb-2">
-                      {['Eletricista', 'Pedreiro', 'Cabeleireira', 'Técnico de Informática'][item - 1]}
-                    </p>
-                    <div className="flex items-center mb-3">
-                      <div className="flex">
-                        {[1, 2, 3, 4, 5].map((star) => (
-                          <Star 
-                            key={star} 
-                            size={14} 
-                            className={`${star <= 4 ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`}
-                          />
-                        ))}
+            {loading ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {[1, 2, 3, 4].map((item) => (
+                  <Card key={item} className="animate-pulse">
+                    <div className="h-48 bg-gray-200"></div>
+                    <CardContent className="p-4">
+                      <div className="h-4 bg-gray-200 rounded mb-2"></div>
+                      <div className="h-3 bg-gray-200 rounded mb-2"></div>
+                      <div className="h-3 bg-gray-200 rounded mb-3"></div>
+                      <div className="h-8 bg-gray-200 rounded"></div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {filteredProfessionals.slice(0, 8).map((prof) => (
+                  <Card key={prof.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+                    <div className="aspect-w-1 aspect-h-1 bg-gradient-to-br from-primary/10 to-accent/10">
+                      <div className="flex items-center justify-center h-48 text-6xl">
+                        {prof.profession === 'Eletricista' && '⚡'}
+                        {prof.profession === 'Pedreiro' && '🏗️'}
+                        {prof.profession === 'Encanador' && '🔧'}
+                        {prof.profession === 'Pintor' && '🎨'}
+                        {prof.profession === 'Carpinteiro' && '🔨'}
+                        {prof.profession === 'Limpeza Doméstica' && '🧹'}
+                        {prof.profession === 'Jardineiro' && '🌱'}
+                        {prof.profession === 'Técnico em Informática' && '💻'}
                       </div>
-                      <span className="text-xs text-gray-500 ml-1">(24)</span>
                     </div>
-                    <div className="flex items-center text-xs text-gray-500 mb-3">
-                      <MapPin size={14} className="mr-1" />
-                      {['Luanda', 'Benguela', 'Huambo', 'Cabinda'][item - 1]}
-                    </div>
-                    <Button 
-                      variant="outline" 
-                      className="w-full border-accent text-accent hover:bg-accent hover:text-white"
-                    >
-                      Ver Perfil
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+                    <CardContent className="p-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <h3 className="font-semibold text-lg">{prof.name}</h3>
+                        {prof.is_verified && (
+                          <div className="w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center">
+                            <span className="text-white text-xs">✓</span>
+                          </div>
+                        )}
+                      </div>
+                      <p className="text-sm text-gray-500 mb-2">{prof.profession}</p>
+                      <div className="flex items-center mb-3">
+                        <div className="flex">
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <Star 
+                              key={star} 
+                              size={14} 
+                              className={`${star <= Math.floor(prof.rating) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`}
+                            />
+                          ))}
+                        </div>
+                        <span className="text-xs text-gray-500 ml-1">({prof.total_reviews})</span>
+                      </div>
+                      <div className="flex items-center text-xs text-gray-500 mb-3">
+                        <MapPin size={14} className="mr-1" />
+                        {prof.location}
+                      </div>
+                      <div className="text-sm font-semibold text-primary mb-3">
+                        {prof.hourly_rate.toLocaleString('pt-AO')} AOA/hora
+                      </div>
+                      <Link to="/service-request">
+                        <Button 
+                          variant="outline" 
+                          className="w-full border-accent text-accent hover:bg-accent hover:text-white"
+                        >
+                          Contratar
+                        </Button>
+                      </Link>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
             
-            <div className="text-center mt-10">
-              <Button className="bg-accent hover:bg-accent-hover">
-                Ver Todos os Profissionais
-              </Button>
-            </div>
+            {!loading && filteredProfessionals.length === 0 && (
+              <div className="text-center py-12">
+                <p className="text-gray-500 text-lg">Nenhum profissional encontrado com os filtros selecionados.</p>
+                <Button 
+                  onClick={() => {
+                    setSearchTerm("");
+                    setSelectedProvince("");
+                    setRating(0);
+                  }}
+                  className="mt-4"
+                >
+                  Limpar Filtros
+                </Button>
+              </div>
+            )}
+            
+            {!loading && filteredProfessionals.length > 8 && (
+              <div className="text-center mt-10">
+                <Button className="bg-accent hover:bg-accent-hover">
+                  Ver Mais Profissionais
+                </Button>
+              </div>
+            )}
           </section>
         </div>
       </main>
