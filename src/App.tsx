@@ -23,6 +23,7 @@ import ServiceRequest from "./pages/ServiceRequest";
 import ClientDashboard from "./pages/ClientDashboard";
 import Conversation from "./pages/Conversation";
 import ProfessionalRegistration from "./pages/ProfessionalRegistration";
+import ProfessionalDashboard from "./pages/ProfessionalDashboard";
 
 const queryClient = new QueryClient();
 
@@ -50,6 +51,7 @@ const App = () => (
               <Route path="/client-dashboard" element={<ProtectedRoute><ClientDashboard /></ProtectedRoute>} />
               <Route path="/conversation/:requestId" element={<ProtectedRoute><Conversation /></ProtectedRoute>} />
               <Route path="/professional-registration" element={<ProtectedRoute><ProfessionalRegistration /></ProtectedRoute>} />
+              <Route path="/professional-dashboard" element={<ProtectedRoute><ProfessionalDashboard /></ProtectedRoute>} />
               <Route path="/PFLGMANEGER" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
               <Route path="/terms" element={<NotFound />} />
               <Route path="/privacy" element={<NotFound />} />

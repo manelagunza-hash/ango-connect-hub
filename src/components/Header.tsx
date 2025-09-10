@@ -12,7 +12,7 @@ const Header = () => {
   const location = useLocation();
   const { user, signOut } = useAuth();
   const { currentPlan } = useSubscription();
-  const { isAdmin } = useRole();
+  const { isAdmin, isClient, isProfessional } = useRole();
   
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const closeMenu = () => setIsMenuOpen(false);
@@ -78,6 +78,22 @@ const Header = () => {
           <div className="ml-4 flex items-center space-x-2">
             {user ? (
               <>
+                {isClient && (
+                  <Link
+                    to="/client-dashboard"
+                    className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100"
+                  >
+                    Dashboard Cliente
+                  </Link>
+                )}
+                {isProfessional && (
+                  <Link
+                    to="/professional-dashboard"
+                    className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100"
+                  >
+                    Dashboard Profissional
+                  </Link>
+                )}
                 {isAdmin && (
                   <Link
                     to="/PFLGMANEGER"
@@ -86,12 +102,6 @@ const Header = () => {
                     Admin
                   </Link>
                 )}
-                <Link
-                  to="/client-dashboard"
-                  className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100"
-                >
-                  Dashboard
-                </Link>
                 <Link
                   to="/professional-registration"
                   className="px-3 py-2 rounded-md text-sm font-medium text-primary hover:bg-primary/10"
@@ -194,6 +204,24 @@ const Header = () => {
             <div className="pt-4 pb-2 border-t border-gray-200">
               {user ? (
                 <>
+                  {isClient && (
+                    <Link
+                      to="/client-dashboard"
+                      onClick={closeMenu}
+                      className="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 rounded-md"
+                    >
+                      Dashboard Cliente
+                    </Link>
+                  )}
+                  {isProfessional && (
+                    <Link
+                      to="/professional-dashboard"
+                      onClick={closeMenu}
+                      className="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 rounded-md"
+                    >
+                      Dashboard Profissional
+                    </Link>
+                  )}
                   {isAdmin && (
                     <Link
                       to="/PFLGMANEGER"
@@ -203,13 +231,6 @@ const Header = () => {
                       Admin
                     </Link>
                   )}
-                  <Link
-                    to="/client-dashboard"
-                    onClick={closeMenu}
-                    className="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 rounded-md"
-                  >
-                    Dashboard
-                  </Link>
                   <Link
                     to="/professional-registration"
                     onClick={closeMenu}
