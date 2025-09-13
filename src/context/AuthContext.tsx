@@ -27,10 +27,33 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     // Configurar o listener para mudanças de autenticação
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, currentSession) => {
+      async (event, currentSession) => {
         setSession(currentSession);
         setUser(currentSession?.user ?? null);
         setLoading(false);
+
+        // Redirecionamento inteligente após login
+        if (event === 'SIGNED_IN' && currentSession?.user) {
+          setTimeout(async () => {
+            try {
+              const { data } = await supabase
+                .from('user_roles')
+                .select('role')
+                .eq('user_id', currentSession.user.id)
+                .single();
+              
+              if (data?.role === 'professional') {
+                navigate('/dashboard');
+              } else if (data?.role === 'client') {
+                navigate('/dashboard');
+              } else {
+                navigate('/onboarding');
+              }
+            } catch (error) {
+              navigate('/onboarding');
+            }
+          }, 100);
+        }
       }
     );
 
@@ -44,7 +67,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return () => {
       subscription.unsubscribe();
     };
-  }, []);
+  }, [navigate]);
 
   const signIn = async (email: string, password: string) => {
     try {
@@ -56,7 +79,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
       
       toast.success("Login realizado com sucesso!");
-      navigate('/');
+      // Redirecionamento será tratado pela mudança de estado do auth
     } catch (error: any) {
       toast.error(`Erro no login: ${error.message}`);
       console.error('Erro ao fazer login:', error);

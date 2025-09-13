@@ -24,6 +24,8 @@ import ClientDashboard from "./pages/ClientDashboard";
 import Conversation from "./pages/Conversation";
 import ProfessionalRegistration from "./pages/ProfessionalRegistration";
 import ProfessionalDashboard from "./pages/ProfessionalDashboard";
+import Onboarding from "./pages/Onboarding";
+import Dashboard from "./pages/Dashboard";
 
 const queryClient = new QueryClient();
 
@@ -46,6 +48,22 @@ const App = () => (
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/premium" element={<Premium />} />
+              
+              {/* Rota de onboarding */}
+              <Route path="/onboarding" element={
+                <ProtectedRoute>
+                  <Onboarding />
+                </ProtectedRoute>
+              } />
+              
+              {/* Dashboard unificado */}
+              <Route path="/dashboard" element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              } />
+              
+              {/* Rotas protegidas legadas (manter para compatibilidade) */}
               <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
               <Route path="/service-request" element={<ProtectedRoute><ServiceRequest /></ProtectedRoute>} />
               <Route path="/client-dashboard" element={<ProtectedRoute><ClientDashboard /></ProtectedRoute>} />
@@ -53,10 +71,13 @@ const App = () => (
               <Route path="/professional-registration" element={<ProtectedRoute><ProfessionalRegistration /></ProtectedRoute>} />
               <Route path="/professional-dashboard" element={<ProtectedRoute><ProfessionalDashboard /></ProtectedRoute>} />
               <Route path="/PFLGMANEGER" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+              
+              {/* Rotas fixas */}
               <Route path="/terms" element={<NotFound />} />
               <Route path="/privacy" element={<NotFound />} />
               <Route path="/cookies" element={<NotFound />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              
+              {/* Catch-all route */}
               <Route path="*" element={<NotFound />} />
               </Routes>
             </RoleProvider>
