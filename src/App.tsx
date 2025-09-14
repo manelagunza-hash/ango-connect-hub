@@ -56,8 +56,13 @@ const App = () => (
                 </ProtectedRoute>
               } />
               
-              {/* Dashboard unificado */}
+              {/* Dashboard unificado com rotas específicas */}
               <Route path="/dashboard" element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              } />
+              <Route path="/dashboard/*" element={
                 <ProtectedRoute>
                   <Dashboard />
                 </ProtectedRoute>

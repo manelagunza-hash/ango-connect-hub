@@ -33,27 +33,27 @@ import {
 const clientMenuItems = [
   {
     title: 'Minhas Solicitações',
-    url: '/dashboard?tab=requests',
+    url: '/dashboard/requests',
     icon: FileText,
   },
   {
     title: 'Buscar Profissionais',
-    url: '/services',
+    url: '/dashboard/search',
     icon: Search,
   },
   {
     title: 'Propostas Recebidas',
-    url: '/dashboard?tab=proposals',
+    url: '/dashboard/proposals',
     icon: PlusCircle,
   },
   {
     title: 'Conversas',
-    url: '/dashboard?tab=conversations',
+    url: '/dashboard/conversations',
     icon: MessageCircle,
   },
   {
     title: 'Histórico',
-    url: '/dashboard?tab=history',
+    url: '/dashboard/history',
     icon: History,
   },
 ];
@@ -61,27 +61,27 @@ const clientMenuItems = [
 const professionalMenuItems = [
   {
     title: 'Oportunidades',
-    url: '/dashboard?tab=opportunities',
+    url: '/dashboard/opportunities',
     icon: Briefcase,
   },
   {
     title: 'Minhas Propostas',
-    url: '/dashboard?tab=my-proposals',
+    url: '/dashboard/my-proposals',
     icon: FileText,
   },
   {
     title: 'Trabalhos Ativos',
-    url: '/dashboard?tab=active-jobs',
+    url: '/dashboard/active-jobs',
     icon: CheckCircle,
   },
   {
     title: 'Conversas',
-    url: '/dashboard?tab=conversations',
+    url: '/dashboard/conversations',
     icon: MessageCircle,
   },
   {
     title: 'Meu Perfil',
-    url: '/dashboard?tab=profile',
+    url: '/dashboard/profile',
     icon: User,
   },
 ];
@@ -94,11 +94,6 @@ export function AppSidebar() {
   const menuItems = isProfessional ? professionalMenuItems : clientMenuItems;
   
   const isActiveRoute = (url: string) => {
-    if (url.startsWith('/dashboard')) {
-      const urlParams = new URLSearchParams(url.split('?')[1] || '');
-      const locationParams = new URLSearchParams(location.search);
-      return urlParams.get('tab') === locationParams.get('tab');
-    }
     return location.pathname === url;
   };
 
