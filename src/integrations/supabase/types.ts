@@ -84,6 +84,135 @@ export type Database = {
           },
         ]
       }
+      professional_certifications: {
+        Row: {
+          certificate_url: string | null
+          created_at: string
+          id: string
+          is_verified: boolean | null
+          issue_date: string | null
+          issuer: string | null
+          professional_id: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          certificate_url?: string | null
+          created_at?: string
+          id?: string
+          is_verified?: boolean | null
+          issue_date?: string | null
+          issuer?: string | null
+          professional_id: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          certificate_url?: string | null
+          created_at?: string
+          id?: string
+          is_verified?: boolean | null
+          issue_date?: string | null
+          issuer?: string | null
+          professional_id?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "professional_certifications_professional_id_fkey"
+            columns: ["professional_id"]
+            isOneToOne: false
+            referencedRelation: "professionals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      professional_portfolio: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          image_url: string | null
+          professional_id: string
+          project_date: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          professional_id: string
+          project_date?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          professional_id?: string
+          project_date?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "professional_portfolio_professional_id_fkey"
+            columns: ["professional_id"]
+            isOneToOne: false
+            referencedRelation: "professionals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      professional_services: {
+        Row: {
+          base_price: number | null
+          created_at: string
+          description: string | null
+          estimated_duration: number | null
+          id: string
+          is_active: boolean | null
+          professional_id: string
+          service_name: string
+          updated_at: string
+        }
+        Insert: {
+          base_price?: number | null
+          created_at?: string
+          description?: string | null
+          estimated_duration?: number | null
+          id?: string
+          is_active?: boolean | null
+          professional_id: string
+          service_name: string
+          updated_at?: string
+        }
+        Update: {
+          base_price?: number | null
+          created_at?: string
+          description?: string | null
+          estimated_duration?: number | null
+          id?: string
+          is_active?: boolean | null
+          professional_id?: string
+          service_name?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "professional_services_professional_id_fkey"
+            columns: ["professional_id"]
+            isOneToOne: false
+            referencedRelation: "professionals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       professionals: {
         Row: {
           created_at: string

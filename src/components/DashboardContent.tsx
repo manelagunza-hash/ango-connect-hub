@@ -12,6 +12,9 @@ import { ProfessionalOpportunities } from '@/components/professional/Professiona
 import { ProfessionalProposals } from '@/components/professional/ProfessionalProposals';
 import { ProfessionalJobs } from '@/components/professional/ProfessionalJobs';
 import { ProfessionalProfile } from '@/components/professional/ProfessionalProfile';
+import { ProfessionalConversations } from '@/components/professional/ProfessionalConversations';
+import { ProfessionalDashboardStats } from '@/components/professional/ProfessionalDashboardStats';
+import Profile from '@/pages/Profile';
 
 export function DashboardContent() {
   const location = useLocation();
@@ -32,11 +35,13 @@ export function DashboardContent() {
         case 'active-jobs':
           return <ProfessionalJobs />;
         case 'conversations':
-          return <ClientConversations />; // Reusing same conversations component
+          return <ProfessionalConversations />;
         case 'profile':
           return <ProfessionalProfile />;
+        case 'stats':
+          return <ProfessionalDashboardStats />;
         default:
-          return <ProfessionalOpportunities />;
+          return <ProfessionalDashboardStats />;
       }
     } else if (isClient) {
       switch (currentSection) {

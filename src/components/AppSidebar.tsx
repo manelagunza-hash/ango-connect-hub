@@ -28,6 +28,7 @@ import {
   Bell,
   PlusCircle,
   CheckCircle,
+  LayoutDashboard,
 } from 'lucide-react';
 
 const clientMenuItems = [
@@ -59,6 +60,11 @@ const clientMenuItems = [
 ];
 
 const professionalMenuItems = [
+  {
+    title: 'Dashboard',
+    url: '/dashboard/stats',
+    icon: LayoutDashboard,
+  },
   {
     title: 'Oportunidades',
     url: '/dashboard/opportunities',
