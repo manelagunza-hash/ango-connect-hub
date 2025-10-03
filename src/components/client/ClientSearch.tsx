@@ -70,11 +70,11 @@ export function ClientSearch() {
       );
     }
 
-    if (selectedProfession) {
+    if (selectedProfession && selectedProfession !== 'all') {
       filtered = filtered.filter(p => p.profession === selectedProfession);
     }
 
-    if (selectedLocation) {
+    if (selectedLocation && selectedLocation !== 'all') {
       filtered = filtered.filter(p => p.location === selectedLocation);
     }
 
@@ -128,7 +128,7 @@ export function ClientSearch() {
                 <SelectValue placeholder="Todas as profissões" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Todas as profissões</SelectItem>
+                <SelectItem value="all">Todas as profissões</SelectItem>
                 {getUniqueProfessions().map(profession => (
                   <SelectItem key={profession} value={profession}>
                     {profession}
@@ -141,7 +141,7 @@ export function ClientSearch() {
                 <SelectValue placeholder="Todas as localizações" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Todas as localizações</SelectItem>
+                <SelectItem value="all">Todas as localizações</SelectItem>
                 {getUniqueLocations().map(location => (
                   <SelectItem key={location} value={location}>
                     {location}
