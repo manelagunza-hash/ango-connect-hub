@@ -14,6 +14,7 @@ import { ProfessionalJobs } from '@/components/professional/ProfessionalJobs';
 import { ProfessionalProfile } from '@/components/professional/ProfessionalProfile';
 import { ProfessionalConversations } from '@/components/professional/ProfessionalConversations';
 import { ProfessionalDashboardStats } from '@/components/professional/ProfessionalDashboardStats';
+import { ProfessionalReviews } from '@/components/professional/ProfessionalReviews';
 import Profile from '@/pages/Profile';
 
 export function DashboardContent() {
@@ -34,6 +35,8 @@ export function DashboardContent() {
           return <ProfessionalProposals />;
         case 'active-jobs':
           return <ProfessionalJobs />;
+        case 'reviews':
+          return <ProfessionalReviews />;
         case 'conversations':
           return <ProfessionalConversations />;
         case 'profile':

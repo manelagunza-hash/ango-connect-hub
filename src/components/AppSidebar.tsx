@@ -29,6 +29,7 @@ import {
   PlusCircle,
   CheckCircle,
   LayoutDashboard,
+  Star,
 } from 'lucide-react';
 
 const clientMenuItems = [
@@ -79,6 +80,11 @@ const professionalMenuItems = [
     title: 'Trabalhos Ativos',
     url: '/dashboard/active-jobs',
     icon: CheckCircle,
+  },
+  {
+    title: 'Avaliações',
+    url: '/dashboard/reviews',
+    icon: Star,
   },
   {
     title: 'Conversas',
