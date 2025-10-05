@@ -26,6 +26,8 @@ import ProfessionalRegistration from "./pages/ProfessionalRegistration";
 import ProfessionalDashboard from "./pages/ProfessionalDashboard";
 import Onboarding from "./pages/Onboarding";
 import Dashboard from "./pages/Dashboard";
+import Settings from "./pages/Settings";
+import Notifications from "./pages/Notifications";
 
 const queryClient = new QueryClient();
 
@@ -65,6 +67,18 @@ const App = () => (
               <Route path="/dashboard/*" element={
                 <ProtectedRoute>
                   <Dashboard />
+                </ProtectedRoute>
+              } />
+              
+              {/* Standalone pages */}
+              <Route path="/notifications" element={
+                <ProtectedRoute>
+                  <Notifications />
+                </ProtectedRoute>
+              } />
+              <Route path="/settings" element={
+                <ProtectedRoute>
+                  <Settings />
                 </ProtectedRoute>
               } />
               

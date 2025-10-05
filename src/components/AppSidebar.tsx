@@ -2,6 +2,7 @@ import React from 'react';
 import { useLocation, NavLink } from 'react-router-dom';
 import { useRole } from '@/context/RoleContext';
 import { useAuth } from '@/context/AuthContext';
+import NotificationBadge from './NotificationBadge';
 import {
   Sidebar,
   SidebarContent,
@@ -161,15 +162,16 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild>
+                <SidebarMenuButton asChild className={`${isActiveRoute('/notifications') ? 'bg-sidebar-accent text-sidebar-accent-foreground' : ''}`}>
                   <NavLink to="/notifications" className="flex items-center gap-3">
                     <Bell className="h-4 w-4" />
                     <span>Notificações</span>
+                    <NotificationBadge />
                   </NavLink>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild>
+                <SidebarMenuButton asChild className={`${isActiveRoute('/settings') ? 'bg-sidebar-accent text-sidebar-accent-foreground' : ''}`}>
                   <NavLink to="/settings" className="flex items-center gap-3">
                     <Settings className="h-4 w-4" />
                     <span>Configurações</span>

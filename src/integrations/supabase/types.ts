@@ -84,6 +84,45 @@ export type Database = {
           },
         ]
       }
+      notifications: {
+        Row: {
+          created_at: string | null
+          id: string
+          is_read: boolean | null
+          message: string
+          read_at: string | null
+          related_id: string | null
+          related_type: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          message: string
+          read_at?: string | null
+          related_id?: string | null
+          related_type?: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          message?: string
+          read_at?: string | null
+          related_id?: string | null
+          related_type?: string | null
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       professional_certifications: {
         Row: {
           certificate_url: string | null
@@ -215,6 +254,7 @@ export type Database = {
       }
       professionals: {
         Row: {
+          availability_schedule: Json | null
           created_at: string
           description: string | null
           email: string
@@ -224,7 +264,11 @@ export type Database = {
           is_verified: boolean | null
           location: string | null
           name: string
+          notification_preferences: Json | null
+          onboarding_completed: boolean | null
+          payment_methods: Json | null
           phone: string | null
+          privacy_settings: Json | null
           profession: string
           rating: number | null
           total_reviews: number | null
@@ -232,6 +276,7 @@ export type Database = {
           user_id: string | null
         }
         Insert: {
+          availability_schedule?: Json | null
           created_at?: string
           description?: string | null
           email: string
@@ -241,7 +286,11 @@ export type Database = {
           is_verified?: boolean | null
           location?: string | null
           name: string
+          notification_preferences?: Json | null
+          onboarding_completed?: boolean | null
+          payment_methods?: Json | null
           phone?: string | null
+          privacy_settings?: Json | null
           profession: string
           rating?: number | null
           total_reviews?: number | null
@@ -249,6 +298,7 @@ export type Database = {
           user_id?: string | null
         }
         Update: {
+          availability_schedule?: Json | null
           created_at?: string
           description?: string | null
           email?: string
@@ -258,7 +308,11 @@ export type Database = {
           is_verified?: boolean | null
           location?: string | null
           name?: string
+          notification_preferences?: Json | null
+          onboarding_completed?: boolean | null
+          payment_methods?: Json | null
           phone?: string | null
+          privacy_settings?: Json | null
           profession?: string
           rating?: number | null
           total_reviews?: number | null
