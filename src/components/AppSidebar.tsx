@@ -31,6 +31,7 @@ import {
   CheckCircle,
   LayoutDashboard,
   Star,
+  DollarSign,
 } from 'lucide-react';
 
 const clientMenuItems = [
@@ -81,6 +82,11 @@ const professionalMenuItems = [
     title: 'Trabalhos Ativos',
     url: '/dashboard/active-jobs',
     icon: CheckCircle,
+  },
+  {
+    title: 'Finanças',
+    url: '/dashboard/finances',
+    icon: DollarSign,
   },
   {
     title: 'Avaliações',

@@ -28,6 +28,8 @@ import Onboarding from "./pages/Onboarding";
 import Dashboard from "./pages/Dashboard";
 import Settings from "./pages/Settings";
 import Notifications from "./pages/Notifications";
+import ProfessionalOnboarding from "./pages/ProfessionalOnboarding";
+import ProfessionalFinances from "./pages/ProfessionalFinances";
 
 const queryClient = new QueryClient();
 
@@ -79,6 +81,16 @@ const App = () => (
               <Route path="/settings" element={
                 <ProtectedRoute>
                   <Settings />
+                </ProtectedRoute>
+              } />
+              <Route path="/professional-onboarding" element={
+                <ProtectedRoute>
+                  <ProfessionalOnboarding />
+                </ProtectedRoute>
+              } />
+              <Route path="/dashboard/finances" element={
+                <ProtectedRoute>
+                  <ProfessionalFinances />
                 </ProtectedRoute>
               } />
               

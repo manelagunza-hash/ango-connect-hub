@@ -66,7 +66,7 @@ const ProfessionalRegistration = () => {
       if (error) throw error;
 
       toast.success('Cadastro profissional criado com sucesso!');
-      navigate('/profile');
+      navigate('/professional-onboarding');
     } catch (error: any) {
       console.error('Erro ao criar cadastro profissional:', error);
       toast.error(`Erro ao criar cadastro: ${error.message}`);
